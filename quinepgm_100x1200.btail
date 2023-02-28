@@ -1,0 +1,179 @@
+# -    [    +    >    ]    <    .    END
+#>---  >--  >-   >    >+   >++  >+++ ----
+
+# (c) 2017 Erik Bosman
+# Distributed under GPLv3
+
+# -3   -2   -1   0    1    2    3    -4
+
+#
+# == code part of the quine ==
+# the quine starts with data matching this code,
+# encoded using the table above, in reverse order
+#
+
+++++[ # While there is data, stop at -4
+
+	# copy data, adding 4 to each byte
+	-
+	[
+		->>+        # copy data describing code
+		[>]+++[<]<  # add a '+' symbol at the other end,
+                    # creating the data describing the data
+	]
+	>>+
+
+	[>]              # at the end,
+		<---[+++>+>] # remove up to 3 '+' symbols, or add '-' symbols
+		<---[+++>+>] # if all '+''s have been removed already
+		<---[+++>+>]
+		++++         # append a '>' symbol
+	[<]
+	<<
+
+++++]
+
+# NEW MEMORY ENCODING:
+# -   [    +    >    ]    <    .   END
+# 1   2    3    4    5    6    7   0
+
+>>>[>] # go to the end
+
++>+>+>+ # add 4 '-' symbols as end of data marker
+
+# reverse data 
+[- >>+[>]>[>]+
+
+   [<]<[<]< [- >>[>]>[>]< + [<]<[<]< ]
+<
+]
+
+# print pgm header
+++++++++++[->++++++++>+>+++++>+++<<<<]
+>.>>++.----<.>.-..+>+.<.+.--..<.>++.+++..<.
+
+# print 202x '\0' 2 lines + 2 left padding
++[+++++[-<<..>>]<]
+
+>>>
+
+[->]> # clear a trail of 1's the reverse operation left behind,
+         # back to our (reversed) data
+
+# Encoding for rows in font bitmap:
+#
+#-1 -> marker / memory scratch space
+# 3 -> 000110
+# 1 -> 000000
+# 2 -> 001100
+# 4 -> 011000
+# 5 -> 011110
+# 6 -> 111111
+
+# . -> -1,3,3,2,2,2,2,2
+# [ -> -1,5,4,4,4,4,5,2
+# + -> -1,3,3,6,6,3,3,2
+# > -> -1,4,3,1,1,3,4,2
+# - -> -1 2 2 6,6,2,2,2
+# < -> -1 1.3.4.4.3.1.2
+# ] -> -1,5,1,1,1,1,5,2
+
++[- # While there is data
+
+# if (!counter) counter = 14;
+<<+<[>-]>[+[<+++++++>-]>>[>]-[<] ]>
+
+# chop byte from input,
+# add bitmap row codes at the end of the data,
+# code data & row code buffers are separated by a -1 marker
+
+-<+>[-[-[-[-[-[-
+	<->
+	# ELSE (statement is backwards) (IF) '.'
+		>[>]-->>>>>+>+>>
+	 >]<[->
+	# ELSE IF '<'
+		>[>]-->->+>++>++>+>->>
+	]>]<[->
+	# ELSE IF ']'
+		>[>]-->+++>->->->->+++>>
+	]>]<[->
+	# ELSE IF '>'
+		>[>]-->++>+>->->+>++>>
+	]>]<[->
+	# ELSE IF '+'
+		>[>]-->+>+>++++>++++>+>+>>
+	]>]<[->
+	# ELSE IF '['
+		>[>]-->+++>++>++>++>++>+++>>
+	]>]<[->
+	# IF '-'
+		>[>]-->>>++++>++++>>>>
+	]
+	<++[<++]- # add 2 to the just added row-codes
+            # (until we hit -2, make it -1) (saves lots of +'s)
+	[<]
+
+# if (!--counter)
+<+<<[->+<]>-[>-]>
+# { ... /* print 14 characters (7 lines high) */ }
+[-> >+[->+]>
+
+# for each line:
+>+[-
+
+# for each character 
+[ # while (++character) // stop at a marker
+
+-[-[-[-[-[-
+  <
+# if row_code == 5 -> print 111111
+  ......+
+   >]<[
+# if row_code == 6 -> print 011110
+  >.<....+.
+  ]>]<[
+# if row_code == 4 -> print 011000
+  >.<..+...
+  ]>]<[
+# if row_code == 2 -> print 001100
+  >..<..+..
+  ]>]<[
+# if row_code == 1 -> print 000000
+  +......
+  ]>]<[
+# if row_code == 3 -> print 000110
+  >...<..+.
+  ]
+
+. # print '\0' ( right padding )
+-  # return scratch space back into -1 marker
+>- # turn printed data into scratch space / -1 marker
+
+# same row, next character
+>>>>>>>>]
+
+<+ # make end non-zero for code-size reasons
+[<]
+
+.. # print '\0\0' ( start of line padding )
+
+>+ # clear first marker ( move to next scanline )
+
+>>+] # next line
+
++ # make non-zero for code-size reasons
+
+# clear memory used for printing the 14 characters
+[>]<[+[-]<]
+
+<<<<<<<<[<] # back to the start of the data
+
+# end of { ... /* print 14 characters (7 lines high) */ }
+]
+
+>+] # next data character
+
+<<..<++++[-<......>]
+ <+ # data section filler to make the last ']'
+   # the last character printed
