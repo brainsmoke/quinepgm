@@ -3,7 +3,7 @@
 # bf to c translator
 
 # (c) 2017 Erik Bosman
-# Distributed under GPLv3
+# Distributed under MIT Licence
 
 import sys
 

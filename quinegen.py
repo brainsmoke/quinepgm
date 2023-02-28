@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # (c) 2017 Erik Bosman
-# Distributed under GPLv3
+# Distributed under MIT Licence
 
 import sys
 
